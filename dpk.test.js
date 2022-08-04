@@ -52,13 +52,26 @@ describe("deterministicPartitionKey", () => {
     }, 4);
   });
 
-  it("Consistently returns the same partition when given the same object", () => {
+  it("Consistently returns the same partition key when given the same object", () => {
     const event = { one: 1, two: "two", three: 3 };
     const expectedKey =
       "545524d2b9cf531f84118386ae7aa60f8819e61caf26c8cdda914e8da19b21c92fa3465159a697f07e1f30a33e2975e3b696873ab7b2b6eda79f63f42d52bd12";
     repeat(() => {
       const result = deterministicPartitionKey(event);
       expect(result).toBe(expectedKey);
+    });
+  });
+
+  it("Consistently returns the same partition key when given an equivalent object (different object ID, same key/value pairs)", () => {
+    const event = { one: 1, two: "two", three: 3 };
+    const equivalentEvent = { one: 1, two: "two", three: 3 };
+    const expectedKey =
+      "545524d2b9cf531f84118386ae7aa60f8819e61caf26c8cdda914e8da19b21c92fa3465159a697f07e1f30a33e2975e3b696873ab7b2b6eda79f63f42d52bd12";
+    repeat(() => {
+      const result1 = deterministicPartitionKey(event);
+      const result2 = deterministicPartitionKey(equivalentEvent);
+      expect(result1).toBe(expectedKey);
+      expect(result2).toBe(expectedKey);
     });
   });
 
